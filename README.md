@@ -11,10 +11,10 @@ This code is provided as-is, and you may be need to modify it to fit your own re
 The screenshots are made on a MacOS target, because well, it is faster than the iOS simulator.
 
 ### Dark Mode
-![Dark Mode](Scherm­afbeelding%202026-10-15%20om%2023.09.02.png)
+![Dark Mode](Scherm­afbeelding%202026-10-16%20om%2009.41.20.png)
 
 ### Light Mode
-![Light Mode](Scherm­afbeelding%202026-10-15%20om%2023.08.47.png)
+![Light Mode](Scherm­afbeelding%202026-10-16%20om%2009.41.35.png)
 
 # License
 

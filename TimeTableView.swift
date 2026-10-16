@@ -49,7 +49,7 @@ struct TimeTableView: View {
         .accessibilityHidden(true)
     }
 
-    /// The timeline background and event blocks, both measured against the same hourly scale.
+    /// The timeline background and event blocks, both measured against the same hourly scale.X$
     private var eventList: some View {
         ZStack(alignment: .topLeading) {
             hourLines
@@ -60,6 +60,8 @@ struct TimeTableView: View {
                     .offset(y: eventOffset(for: event))
                     .padding(.horizontal, 4)
             }
+
+            currentTimeIndicator
         }
         .accessibilityElement(children: .contain)
         .accessibilityLabel("Swiftleeds Schedule")
@@ -78,9 +80,40 @@ struct TimeTableView: View {
         }
     }
 
+    /// A red line positioned at the current time while it falls within the displayed hours.
+    ///
+    /// The timeline refreshes once per minute so the indicator stays aligned with the clock
+    /// without requiring a long-lived timer owned by the view.
+    private var currentTimeIndicator: some View {
+        TimelineView(.periodic(from: .now, by: 60)) { context in
+            if let offset = currentTimeOffset(for: context.date) {
+                Rectangle()
+                    .fill(.red)
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 2)
+                    .offset(y: offset)
+                    .accessibilityHidden(true)
+            }
+        }
+    }
+
     /// The total height required for all displayed hours.
     private var totalHeight: CGFloat {
         CGFloat(hours.count) * hourHeight
+    }
+
+    /// Calculates the current-time line's position when the clock is within the displayed range.
+    ///
+    /// - Parameter date: The clock value to project onto the timetable.
+    /// - Returns: The vertical offset for the indicator, or `nil` outside the displayed hours.
+    private func currentTimeOffset(for date: Date) -> CGFloat? {
+        let components = Calendar.current.dateComponents([.hour, .minute], from: date)
+        guard let hour = components.hour, let minute = components.minute, hours.contains(hour) else {
+            return nil
+        }
+
+        let elapsedMinutes = (hour - hours[0]) * 60 + minute
+        return CGFloat(elapsedMinutes) / 60 * hourHeight
     }
 
     /// Calculates an event's distance from the top of the displayed day.
